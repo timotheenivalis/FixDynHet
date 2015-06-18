@@ -1,7 +1,7 @@
 //    DynFixSim simulate animal populations with various levels of fixed and dynamic heterogeneity in life history
 //    and extract statistics for further analysis.
 //
-//	  Copyright (C) 2014  Timothée Bonnet - timothee.bonnet@ieu.uzh.ch
+//	  Copyright (C) 2014-2015  Timothée Bonnet - timothee.bonnet@ieu.uzh.ch
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
                         {
                             PoissonMaxLRS=Contain[1].size();//we need it for latter writting, and we will update the value during neutral simulations
                         }
-                    unsigned int NStudyLength=StudyLength;//at the moment we keep most parameters equal in neutral and selective simulations
+                    unsigned int NStudyLength=StudyLength;
                     unsigned int NIndInCohort=IndInCohort;
 
                     vector<long double> MeanNeutralLRS;//alternative to the storage
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 
                     for (unsigned int NSim(0);NSim<NeutralSimulNumber;NSim++)
                         {
-if (DisplayProgression==true)  cerr<<"\r nbSPoisson "<<nbSPoisson<<" nbNeutral "<<NSim<<" starting"<<flush;
+                        if (DisplayProgression==true)  cerr<<"\r nbSPoisson "<<nbSPoisson<<" nbNeutral "<<NSim<<" starting"<<flush;
                             vector<CCohort> PopulationN;
                             unsigned int NIndKey(0);
                             for (unsigned int NYear(0);NYear<NStudyLength;NYear++)//neutral simulations
@@ -271,9 +271,6 @@ if (DisplayProgression==true)  cerr<<"\r nbSPoisson "<<nbSPoisson<<" nbNeutral "
             string folderName("OutputDFS_");
             folderName+=stst.str();
 
-            //mkdir(folderName.c_str());
-            //string commandrm("rm -r ");
-            //system((commandrm+folderName).c_str());
             cout<<endl;
             string command("mkdir ");
             system((command+folderName).c_str());
@@ -301,9 +298,9 @@ if (DisplayProgression==true)  cerr<<"\r nbSPoisson "<<nbSPoisson<<" nbNeutral "
     return 0;
 }//end int main(int argc,char *argv[])
 
-/******************************************************************************************************************************************************************************/
-//**************************************************************/SECONDARY FUNCTIONS/***************************************************************************************//
-/******************************************************************************************************************************************************************************/
+/***********************************************************************************************************************************************************************/
+//**************************************************************/SECONDARY FUNCTIONS/**********************************************************************************//
+/***********************************************************************************************************************************************************************/
 int FCorrectPoisson(long double& CorrectionPoisson, long double& CorrectionBinomial)
 {
     long double CorrectlogscaleLambda(0.);
@@ -419,7 +416,6 @@ CIndividu FPoissonSimul(unsigned int& IndKey,long double const& CorrectionPoisso
                     k--;
                     if(k<0.) {cerr<<endl<<"PATATRAF POISSON, k should not <0, k="<<k<<endl<<flush;k=0.;}
                     repro=k;
-if(repro>(10*exp(log(double(MeanRepro))+4*pow(IndVarRepro,0.5)))) {cerr<<"A problem might have occured in FPoissonSimul, repro="<<repro<<" while maximum expectation ="<<10*exp(log(double(MeanRepro))+4*pow(IndVarRepro,0.5))<<endl;}
                     long double fatum=alea();
                     long double intercept=log(AdultSurvival/(1-AdultSurvival));
                     long double logitvalue=intercept-CorrectionBinomial+(repro-MeanRepro)*CorReproSurv+Individu.SurvivalQuality;
@@ -442,15 +438,9 @@ if(repro>(10*exp(log(double(MeanRepro))+4*pow(IndVarRepro,0.5)))) {cerr<<"A prob
 
             Individu.LifeHistory.push_back(LHind);
 
-
             LHS=2;
             age++;
         }
-
-        /*ofstream Distri("GaussianTest.txt",ios::app);
-    long unsigned int a=repro;
-        Distri<<a<<endl;*/
-
         IndKey++;
     return(Individu);
 }//end CIndividu FPoissonSimul(unsigned int& IndKey,long double const& CorrectionPoisson)
@@ -497,9 +487,8 @@ CIndividu FNeutralSimul(unsigned int& NIndKey, unsigned int const& NYear,double 
                                 k++;
                             }
                             k--;
-        if(k<0) {cerr<<endl<<"ET PATATRAF NEUTRAL, k should not <0, k="<<k<<endl<<flush; k=0.;}
+                            if(k<0) {cerr<<endl<<"ET PATATRAF NEUTRAL, k should not <0, k="<<k<<endl<<flush; k=0.;}
                             repro=k;
-//if(repro>(exp(log(double(MeanRepro))+4*pow(IndVarRepro,0.5)))) {cerr<<"A problem might have occured in FNeutralSimul, repro="<<repro<<" while maximum expectation is"<<(exp(log(double(repro))+4*pow(IndVarRepro,0.5)))<<endl;}
 
                             long double fatum=alea();
 
@@ -574,7 +563,6 @@ if(MaxARS>(exp(log(double(MeanRepro))+4*pow(MeanRepro+IndVarRepro,0.5)))) {cerr<
                         }
                 }
         }
-
 
     long double SumCollector(0.);
     map<unsigned int, long double>::iterator it;
